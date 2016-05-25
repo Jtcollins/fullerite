@@ -20,7 +20,7 @@ Uses /proc/mounts and os.statvfs() to get disk space usage
 
 """
 
-import diamond.collector
+import diamond.collector 
 import diamond.convertor
 import os
 import re
@@ -228,28 +228,27 @@ class DiskSpaceCollector(diamond.collector.Collector):
                 raise NotImplementedError("platform not supported")
 
             for unit in self.config['byte_unit']:
-                metric_name = 'percentfree'
+                metric_name = 'diskspace_percentfree'
 		self.dimensions = {
-			'device' : name + '.' + unit,
+			'device' : name,
 		}
                 metric_value = float(blocks_free) / float(
                     blocks_free + (blocks_total - blocks_free)) * 100
-                
 		self.publish_gauge(metric_name, metric_value, precision=2)
 
-                metric_name = 'used'
+                metric_name = 'diskspace_used.%s' % unit
 		self.dimensions = {
-                        'device' : name + '.' + unit,
+                        'device' : name,
                 }
                 metric_value = float(block_size) * float(
                     blocks_total - blocks_free)
                 metric_value = diamond.convertor.binary.convert(
                     value=metric_value, oldUnit='byte', newUnit=unit)
-                self.publish_gauge(metric_name, metric_value, precision=2)
+		self.publish_gauge(metric_name, metric_value, precision=2)
 
-                metric_name = 'free'
+                metric_name = 'diskspace_free.%s' % unit
 		self.dimensions = {
-                        'device' : name + '.' + unit,
+                        'device' : name,
                 }
                 metric_value = float(block_size) * float(blocks_free)
                 metric_value = diamond.convertor.binary.convert(
@@ -257,9 +256,9 @@ class DiskSpaceCollector(diamond.collector.Collector):
                 self.publish_gauge(metric_name, metric_value, precision=2)
 
                 if os.name != 'nt':
-                    metric_name = 'avail'
+                    metric_name = 'diskspace_avail%s' % unit
 		    self.dimensions = {
-                        'device' : name + '.' + unit,
+                        'device' : name,
                     }
                     metric_value = float(block_size) * float(blocks_avail)
                     metric_value = diamond.convertor.binary.convert(
@@ -272,17 +271,17 @@ class DiskSpaceCollector(diamond.collector.Collector):
                         'device' : name,
                     }
                     self.publish_gauge(
-                        'inodes_percentfree',
+                        'diskspace_inodes_percentfree',
                         float(inodes_free) / float(inodes_total) * 100)
                 
 		self.dimensions = {
                         'device' : name,
                 }
-		self.publish_gauge('inodes_used',
+		self.publish_gauge('diskspace_inodes_used',
                                    inodes_total - inodes_free)
 
 		self.dimensions = {
                         'device' : name,
                 }
-                self.publish_gauge('inodes_free', inodes_free)
-                self.publish_gauge('inodes_avail', inodes_avail)
+                self.publish_gauge('diskspace_inodes_free', inodes_free)
+                self.publish_gauge('diskspace_inodes_avail', inodes_avail)
