@@ -197,9 +197,6 @@ class DiskSpaceCollector(diamond.collector.Collector):
                 name = name.replace('.', '_').replace('\\', '')
                 if name == '_':
                     name = 'root'
-	    
-	    #device_name = [:name.find('.')]
-	    #name = name[name.find('.')+1:] 
 
             if hasattr(os, 'statvfs'):  # POSIX
                 try:
@@ -233,7 +230,7 @@ class DiskSpaceCollector(diamond.collector.Collector):
             for unit in self.config['byte_unit']:
                 metric_name = 'percentfree'
 		self.dimensions = {
-			'device' = name + '.' + unit,
+			'device' : name + '.' + unit,
 		}
                 metric_value = float(blocks_free) / float(
                     blocks_free + (blocks_total - blocks_free)) * 100
@@ -242,7 +239,7 @@ class DiskSpaceCollector(diamond.collector.Collector):
 
                 metric_name = 'used'
 		self.dimensions = {
-                        'device' = name + '.' + unit,
+                        'device' : name + '.' + unit,
                 }
                 metric_value = float(block_size) * float(
                     blocks_total - blocks_free)
@@ -252,7 +249,7 @@ class DiskSpaceCollector(diamond.collector.Collector):
 
                 metric_name = 'free'
 		self.dimensions = {
-                        'device' = name + '.' + unit,
+                        'device' : name + '.' + unit,
                 }
                 metric_value = float(block_size) * float(blocks_free)
                 metric_value = diamond.convertor.binary.convert(
@@ -262,7 +259,7 @@ class DiskSpaceCollector(diamond.collector.Collector):
                 if os.name != 'nt':
                     metric_name = 'avail'
 		    self.dimensions = {
-                        'device' = name + '.' + unit,
+                        'device' : name + '.' + unit,
                     }
                     metric_value = float(block_size) * float(blocks_avail)
                     metric_value = diamond.convertor.binary.convert(
@@ -272,20 +269,20 @@ class DiskSpaceCollector(diamond.collector.Collector):
             if os.name != 'nt':
                 if float(inodes_total) > 0:
 		    self.dimensions = {
-                        'device' = name,
+                        'device' : name,
                     }
                     self.publish_gauge(
                         'inodes_percentfree',
                         float(inodes_free) / float(inodes_total) * 100)
                 
 		self.dimensions = {
-                        'device' = name,
+                        'device' : name,
                 }
 		self.publish_gauge('inodes_used',
                                    inodes_total - inodes_free)
 
 		self.dimensions = {
-                        'device' = name,
+                        'device' : name,
                 }
                 self.publish_gauge('inodes_free', inodes_free)
                 self.publish_gauge('inodes_avail', inodes_avail)
