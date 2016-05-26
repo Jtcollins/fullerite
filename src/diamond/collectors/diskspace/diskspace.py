@@ -231,7 +231,7 @@ class DiskSpaceCollector(diamond.collector.Collector):
                 metric_name = 'diskspace_percentfree'
                 self.dimensions = {
                     'device' : name,
-                    'unit' : 'percent'
+                    'unit' : 'percent',
                 }
 		metric_value = float(blocks_free) / float(
                     blocks_free + (blocks_total - blocks_free)) * 100
@@ -240,7 +240,7 @@ class DiskSpaceCollector(diamond.collector.Collector):
                 metric_name = 'diskspace_used'
                 self.dimensions = {
                     'device' : name,
-                    'unit' : unit
+                    'unit' : unit,
                 }
                 metric_value = float(block_size) * float(
                     blocks_total - blocks_free)
@@ -251,7 +251,7 @@ class DiskSpaceCollector(diamond.collector.Collector):
                 metric_name = 'diskspace_free'
                 self.dimensions = {
                     'device' : name,
-                    'unit' : unit
+                    'unit' : unit,
                 }
                 metric_value = float(block_size) * float(blocks_free)
                 metric_value = diamond.convertor.binary.convert(
@@ -262,7 +262,7 @@ class DiskSpaceCollector(diamond.collector.Collector):
                     metric_name = 'diskspace_avail'
 		    self.dimensions = {
                         'device' : name,
-                        'unit' : unit
+                        'unit' : unit,
                     }
                     metric_value = float(block_size) * float(blocks_avail)
                     metric_value = diamond.convertor.binary.convert(
@@ -273,7 +273,7 @@ class DiskSpaceCollector(diamond.collector.Collector):
                 if float(inodes_total) > 0:
 		    self.dimensions = {
                          'device' : name,
-                         'unit' : 'percent'
+                         'unit' : 'percent',
                     }
                     self.publish_gauge(
                         'diskspace_inodes_percentfree',
@@ -281,14 +281,14 @@ class DiskSpaceCollector(diamond.collector.Collector):
                 
                 self.dimensions = {
                     'device' : name,
-                    'unit' : 'inode'
+                    'unit' : 'inode',
                 }
 		self.publish_gauge('diskspace_inodes_used',
                                    inodes_total - inodes_free)
 
 		self.dimensions = {
                         'device' : name,
-                        'unit' : 'inode'
+                        'unit' : 'inode',
                 }
                 self.publish_gauge('diskspace_inodes_free', inodes_free)
                 self.publish_gauge('diskspace_inodes_avail', inodes_avail)
