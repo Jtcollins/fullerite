@@ -227,7 +227,7 @@ class DiskSpaceCollector(diamond.collector.Collector):
                 raise NotImplementedError("platform not supported")
 
             for unit in self.config['byte_unit']:
-                metric_name = 'diskspace_percentfree'
+                metric_name = 'diskspace.percent_free'
                 self.dimensions = {
                     'device' : name,
                     'unit' : 'percent',
@@ -236,7 +236,7 @@ class DiskSpaceCollector(diamond.collector.Collector):
                     blocks_free + (blocks_total - blocks_free)) * 100
                 self.publish_gauge(metric_name, metric_value, precision=2)
 
-                metric_name = 'diskspace_used'
+                metric_name = 'diskspace.used'
                 self.dimensions = {
                     'device' : name,
                     'unit' : unit,
@@ -247,7 +247,7 @@ class DiskSpaceCollector(diamond.collector.Collector):
                     value=metric_value, oldUnit='byte', newUnit=unit)
 		self.publish_gauge(metric_name, metric_value, precision=2)
 
-                metric_name = 'diskspace_free'
+                metric_name = 'diskspace.free'
                 self.dimensions = {
                     'device' : name,
                     'unit' : unit,
@@ -258,7 +258,7 @@ class DiskSpaceCollector(diamond.collector.Collector):
                 self.publish_gauge(metric_name, metric_value, precision=2)
 
                 if os.name != 'nt':
-                    metric_name = 'diskspace_avail'
+                    metric_name = 'diskspace.avail'
 		    self.dimensions = {
                         'device' : name,
                         'unit' : unit,
@@ -275,19 +275,19 @@ class DiskSpaceCollector(diamond.collector.Collector):
                          'unit' : 'percent',
                     }
                     self.publish_gauge(
-                        'diskspace_inodes_percentfree',
+                        'diskspace.inodes_percentfree',
                         float(inodes_free) / float(inodes_total) * 100)
                 
                 self.dimensions = {
                     'device' : name,
                     'unit' : 'inode',
                 }
-		self.publish_gauge('diskspace_inodes_used',
+		self.publish_gauge('diskspace.inodes_used',
                                    inodes_total - inodes_free)
 
 		self.dimensions = {
                         'device' : name,
                         'unit' : 'inode',
                 }
-                self.publish_gauge('diskspace_inodes_free', inodes_free)
-                self.publish_gauge('diskspace_inodes_avail', inodes_avail)
+                self.publish_gauge('diskspace.inodes_free', inodes_free)
+                self.publish_gauge('diskspace.inodes_avail', inodes_avail)
